@@ -1,0 +1,31 @@
+  initGlobals:
+    - script: |
+        var regions = '${settings.regions}'.split(','),
+            envGroups = eval('(' + MANIFEST + ')').envGroups, index,
+            onAfterReturn = { setGlobals: {} }, 
+            glbs = onAfterReturn.setGlobals,
+            resp, domain;
+        resp = jelastic.env.control.GetRegions(appid, session);
+        if (resp.result != 0) return resp;
+        resp = resp.array;
+        for (var i = 0, n = regions.length; i < n; i ++) {
+          index = i + 1;
+          glbs["region-" + index] = regions[i];
+          for (var a = 0, b = resp.length; a < b; a++) {
+            for (var k = 0, l = resp[a].hardNodeGroups.length; k < l; k++) {
+              if (resp[a].hardNodeGroups[k].uniqueName == regions[i])
+                glbs["domain-" + index] = resp[a].domain;
+            }
+          }
+          if (index == 1) {
+            glbs["displayName-" + index] = "Redis Cluster Primary";
+            glbs["initial_env_master-" + index] = "true";
+          } else {
+            glbs["displayName-" + index] = "Redis Cluster Secondary " + i;
+            glbs["initial_env_master-" + index] = "false";
+          }
+        }
+        glbs["envGroups"] = envGroups;
+        glbs["regionsCount"] = regions.length;
+        glbs["master_env_name"] = "${settings.envName}-1";
+        return { result: 0, onAfterReturn: onAfterReturn };
