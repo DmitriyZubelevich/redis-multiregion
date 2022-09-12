@@ -1,0 +1,8 @@
+  installClusterLogic:
+    - install: ${baseUrl}/addons/auto-cluster.yaml
+      envName: ${settings.envName}-1
+      settings:
+        regions: ${settings.regions}
+        mainEnvName: ${settings.envName}
+        topology: ${settings.topology}
+        masterAddress: ${globals.master_address_sqldb-1}
