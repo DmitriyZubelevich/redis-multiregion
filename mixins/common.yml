@@ -27,7 +27,7 @@ actions:
               glbs["initial_env_master-" + index] = "false";
             }
           } else {
-              glbs["displayName-" + index] = "Redis Cluster" + (i + 1);
+              glbs["displayName-" + index] = "Redis Cluster " + (i + 1);
           }
         }
         glbs["envGroups"] = envGroups;
