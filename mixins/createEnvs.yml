@@ -1,0 +1,24 @@
+  createEnvs:
+  - script: |
+      var regions = '${settings.regions}'.split(','), actions = [];
+      var envGroups = eval('(' + MANIFEST + ')').envGroups;
+      for (var cluster = 1, n = regions.length + 1; cluster < n; cluster ++) {
+        actions.push({
+          jps: "${baseUrl}/scripts/redis.jps?_r=${fn.random}",
+          envName: "${settings.envName}-" + cluster,
+          loggerName: "${settings.envName}-" + cluster,
+          envGroups: "Database cluster ${settings.envName}",
+          displayName: "${globals.displayName-" + cluster + "}",
+          region: "${globals.region-" + cluster + "}",
+          settings: {
+            nodeType: "${settings.nodeType}",
+            password: "${globals.password}",
+            regions: "${settings.regions}",
+            topology: "${settings.topology}",
+            vpnAppid: "${globals.vpnAppid}",
+            internalNetworkEnabled: "${settings.internalNetworkEnabled}",
+            mainEnvName: "${settings.envName}"
+          }
+        });
+      }
+      return { result: 0, onAfterReturn: { 'marketplace.jps.install': actions } };
