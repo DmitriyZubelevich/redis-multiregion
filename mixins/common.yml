@@ -18,12 +18,16 @@ actions:
                 glbs["domain-" + index] = resp[a].domain;
             }
           }
-          if (index == 1) {
-            glbs["displayName-" + index] = "Redis Cluster Primary";
-            glbs["initial_env_master-" + index] = "true";
+          if ('${settings.topology}' == 'maxperf') {
+            if (index == 1) {
+              glbs["displayName-" + index] = "Redis Cluster Primary";
+              glbs["initial_env_master-" + index] = "true";
+            } else {
+              glbs["displayName-" + index] = "Redis Cluster Secondary " + i;
+              glbs["initial_env_master-" + index] = "false";
+            }
           } else {
-            glbs["displayName-" + index] = "Redis Cluster Secondary " + i;
-            glbs["initial_env_master-" + index] = "false";
+              glbs["displayName-" + index] = "Redis Cluster" + i;       
           }
         }
         glbs["envGroups"] = envGroups;
